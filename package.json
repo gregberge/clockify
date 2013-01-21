@@ -11,7 +11,7 @@
   },
   "author": "Greg Bergé <berge.greg@gmail.com>",
   "scripts": {
-    "test": "node test"
+    "test": "node test --single-run"
   },
   "repository": {
     "type" : "git",
