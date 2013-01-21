@@ -2,6 +2,8 @@
 
 Create time-icon based on true time quickly and easily.
 
+[![Build Status](https://travis-ci.org/neoziro/clockify.png?branch=master)](undefined)
+
 ## Example
 
 ````javascript
