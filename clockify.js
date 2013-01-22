@@ -3,9 +3,9 @@
     var defaultsOptions = {
       r: 20,
       strokeWidth: 4,
-      color: "#000",
-      lineJoin: "round",
-      lineCap: "round"
+      color: '#000',
+      lineJoin: 'round',
+      lineCap: 'round'
     };
     
     options = $.extend(defaultsOptions, options);
@@ -31,67 +31,78 @@
         [center, center],
         [mx, my],
       ],
-      pointsStr = "";
+      pointsStr = '';
       
       for(var i = 0, il = points.length; i < il; i++) {
-        pointsStr += points[i].join(",") + " ";
+        pointsStr += points[i].join(',') + ' ';
       }
       
-      svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-      svg.setAttribute("version", "1.2");
-      svg.setAttribute("baseProfile", "tiny");
+      svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('version', '1.2');
+      svg.setAttribute('baseProfile', 'tiny');
       
-      circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-      circle.setAttribute("cx", center);
-      circle.setAttribute("cy", center);
-      circle.setAttribute("r", options.r);
-      circle.setAttribute("fill-opacity", "0");
-      circle.setAttribute("stroke", options.color);
-      circle.setAttribute("stroke-width", options.strokeWidth);
+      circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      circle.setAttribute('cx', center);
+      circle.setAttribute('cy', center);
+      circle.setAttribute('r', options.r);
+      circle.setAttribute('fill-opacity', '0');
+      circle.setAttribute('stroke', options.color);
+      circle.setAttribute('stroke-width', options.strokeWidth);
       svg.appendChild(circle);
       
-      poly = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
-      poly.setAttribute("points", pointsStr);
-      poly.setAttribute("stroke", options.color);
-      poly.setAttribute("stroke-width", options.strokeWidth);
-      poly.setAttribute("stroke-linejoin", options.lineJoin);
-      poly.setAttribute("stroke-linecap", options.lineCap);
-      poly.setAttribute("fill-opacity", "0");
+      poly = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+      poly.setAttribute('points', pointsStr);
+      poly.setAttribute('stroke', options.color);
+      poly.setAttribute('stroke-width', options.strokeWidth);
+      poly.setAttribute('stroke-linejoin', options.lineJoin);
+      poly.setAttribute('stroke-linecap', options.lineCap);
+      poly.setAttribute('fill-opacity', '0');
       svg.appendChild(poly);
       
       return svg;
     };
     
-    getTimeFromDate = function(date) {
+    getTimeFromDate = function (date) {
       return [date.getHours(), date.getMinutes()];
     };
     
-    var date, hm = [];
-    
-    if(typeof options.datetime !== "undefined") {
-      hm = getTimeFromDate(new Date(options.datetime));
+    if(typeof options.datetime !== 'undefined') {
+      date = new Date(options.datetime);
+      hm = getTimeFromDate(date);
     }
-    else if(typeof options.time !== "undefined") {
-      hm = options.time.split(":");
+    else if(typeof options.time !== 'undefined') {
+      hm = options.time.split(':');
     }
     
     this.each(function() {
-      var $this = $(this);
+      var $this = $(this),
+      svg,
+      isoTime;
       
-      if(typeof date === "undefined") {
-        if(typeof $this.attr("datetime") !== "undefined") {
-          hm = getTimeFromDate(new Date($this.attr("datetime")));
+      if(typeof date === 'undefined') {
+        if(typeof $this.attr('datetime') !== 'undefined') {
+          date = new Date($this.attr('datetime'));
+          hm = getTimeFromDate(date);
         }
-        else if(typeof $this.data("time") !== "undefined") {
-          hm = $this.data("time").split(":");
+        else if(typeof $this.data('time') !== 'undefined') {
+          hm = $this.data('time').split(':');
         }
-        else if(typeof $this.data("date") !== "undefined") {
-          hm = getTimeFromDate(new Date($this.data("date")));
+        else if(typeof $this.data('date') !== 'undefined') {
+          hm = getTimeFromDate(new Date($this.data('date')));
         }
       }
+
+      if(!hm.length) {
+        throw new Error("undefined date");
+      }
       
-      var svg = createSvg(hm);
+      svg = createSvg(hm);
+
+      isoTime = new Date();
+      isoTime.setHours(hm[0]);
+      isoTime.setMinutes(hm[1]);
       
+      $this.data('clockify-time', isoTime.toJSON());
       $this.append(svg);
       
     });
