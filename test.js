@@ -1,5 +1,5 @@
-var browsers, options, phantom_bin, testacular, spawn = require('child_process').spawn, exec = require('child_process').exec, cmd;
-phantom_bin = 'PHANTOMJS_BIN=' + __dirname + '/node_modules/phantomjs/lib/phantom/bin/phantomjs';
+var browsers, options, phantom_bin, testacular, spawn = require('child_process').spawn, exec = require('child_process').exec, cmd, env = process.env;
+env.PHANTOMJS_BIN = __dirname + '/node_modules/phantomjs/lib/phantom/bin/phantomjs';
 testacular = '' + __dirname + '/node_modules/testacular/bin/testacular';
 browsers = process.env.TRAVIS ? 'PhantomJS' : 'PhantomJS,Chrome';
 options = [
@@ -13,8 +13,9 @@ if(process.argv.length > 2) {
   });
 }
 
-exec(phantom_bin);
-cmd = spawn('testacular', options);
+cmd = spawn('testacular', options, {
+  env: env
+});
 
 cmd.stdout.on('data', function (data) {
   process.stdout.write('' + data);
